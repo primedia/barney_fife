@@ -80,7 +80,6 @@ module BarneyFife
           conn.use Faraday::Request::BasicAuthentication, ENV['GITHUB_AUTH_TOKEN'], 'x-oauth-basic'
           conn.request :json
 
-          conn.response :logger
           conn.response :json, :content_type => /\bjson$/
           conn.use :instrumentation
           conn.adapter Faraday.default_adapter
