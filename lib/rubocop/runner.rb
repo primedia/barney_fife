@@ -8,6 +8,7 @@ require 'faraday'
 require 'faraday_middleware'
 require 'octokit'
 require 'base64'
+require 'pmap'
 
 Dotenv.load!
 # Run PRs through Rubocop Filter
@@ -106,7 +107,7 @@ module Rubocop
     end
 
     def download_files(files, tmp_rubodir)
-      files.each do |file|
+      files.peach do |file|
         raw_url = file.raw_url
         content_url = file.contents_url
         file_shortname = split_on_sha(raw_url)

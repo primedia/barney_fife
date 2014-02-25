@@ -13,6 +13,7 @@ gem 'dotenv'
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'octokit'
+gem 'pmap'
 
 group :test do
   gem 'pry'

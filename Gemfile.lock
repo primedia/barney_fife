@@ -60,6 +60,7 @@ GEM
     parser (2.1.5)
       ast (~> 1.1)
       slop (~> 3.4, >= 3.4.5)
+    pmap (1.0.1)
     polyglot (0.3.4)
     powerpack (0.0.9)
     pry (0.9.12.6)
@@ -129,6 +130,7 @@ DEPENDENCIES
   faraday_middleware
   hashie
   octokit
+  pmap
   pry
   pry-remote
   rails (= 4.0.3)
