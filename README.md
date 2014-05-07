@@ -11,7 +11,7 @@ To setup:
 * `cp .env{.sample,}`
 * Add Github Auth Token to `.env`
 * Run `rake secret >> .env`
-* Then edit `.env` to put secret token in correct spot.
+* Then edit `.env` to put secret token in correct spot. (explain what "correct spot" means)
 
 To Run a Rubocop investigation:
 
