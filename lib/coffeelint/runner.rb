@@ -17,14 +17,14 @@ module BarneyFife
   module Coffeelint
 
     def self.run(opts = {})
-      # Usage: presenter = BarneyFife::Coffeelint.run(issue_number: '820', owner: 'primedia', repo: 'ag')
-      issue_number = opts.fetch(:issue_number) { '820' }
+      # Usage: presenter = BarneyFife::Coffeelint.run(issue_number: '1352', owner: 'primedia', repo: 'ag')
+      issue_number = opts.fetch(:issue_number) { '1352' }
       owner = opts.fetch(:owner) { 'primedia' }
       repo = opts.fetch(:repo) { 'ag' }
       Dir.mktmpdir('coffeelint') do |tmpdir|
         RoundUp.call(issue_number, owner, repo, tmpdir)
-        command = "coffeelint -f lib/coffeelint/config.json #{tmpdir}/app/assets/javascripts"
-        fuzz = Investigation.call(command, tmpdir)
+        command = "coffeelint -f #{FileUtils.pwd()}/lib/coffeelint/config.json --reporter raw #{tmpdir}"
+        fuzz = Investigation.call(tmpdir, command)
         presenter = InvestigationPresenter.new(fuzz)
       end
     end
