@@ -19,6 +19,7 @@ group :production do
 end
 
 group :test, :development do
+  gem 'foreman'
   gem 'sqlite3'
   gem 'dotenv-rails'
   gem 'rspec-rails'
