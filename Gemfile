@@ -13,13 +13,13 @@ gem 'pmap'
 gem 'anima'
 gem 'ops'
 gem 'environs'
+gem 'bunny'
 
 group :production do
   gem 'sqlite3'
 end
 
 group :test, :development do
-  gem 'foreman'
   gem 'sqlite3'
   gem 'dotenv-rails'
   gem 'rspec-rails'
