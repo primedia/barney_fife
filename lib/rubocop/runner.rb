@@ -1,21 +1,3 @@
-require 'json'
-require 'open3'
-require 'tempfile'
-require 'base64'
-
-# external gems
-require 'rubocop'
-require 'pmap'
-require 'hashie'
-require 'dotenv'
-require 'faraday'
-require 'faraday_middleware'
-require 'octokit'
-require 'anima'
-require 'logger'
-
-Dotenv.load!
-
 # Run PRs through Rubocop Filter
 # Process overview:
 # - Receive PR hook (http://developer.github.com/v3/activity/events/types/#pullrequestevent)
@@ -242,7 +224,9 @@ module BarneyFife
         file = Tempfile.new('rubocop_json')
         final_cmd = [RUBOCOP_CMD, colorless_clang_cmd, json_cmd(file.path), file_list].join(' ')
         warn final_cmd
-        output, status = Open3.capture2("#{final_cmd}")
+        output, status = Bundler.with_clean_env do
+          Open3.capture2("#{final_cmd}")
+        end
         @human_output = humanize_output(output)
         @json_output = hashify(read_json(file.path))
       ensure

@@ -6,5 +6,6 @@ class RubocopController < ApplicationController
     presenter = BarneyFife::Rubocop.run(issue_number: pr.pr_number, owner: pr.owner, repo: pr.repo)
     pr.comment = presenter.human_output
     BarneyFife::Rubocop::Comment.new(issue_number: pr.pr_number, owner: pr.owner, repo: pr.repo, content: pr.comment).create_on_pr
+    render json: pr.to_json
   end
 end
