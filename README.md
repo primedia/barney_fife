@@ -7,6 +7,7 @@ So far, the work has been done in lib/rubocop/runn r.rb.
 To setup:
 
 * Clone repo
+
 * Bundle install
 * `cp .env{.sample,}`
 * Add Github Auth Token to `.env`
