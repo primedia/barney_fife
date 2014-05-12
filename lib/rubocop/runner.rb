@@ -136,7 +136,9 @@ module BarneyFife
             FileUtils.mkdir_p(file_dir)
           end
           content = get_file(content_url)
-          File.write(File.join(file_dir, filename), content)
+          File.open(File.join(file_dir, filename), 'wb') do |file|
+            file.write(content)
+          end
         end
       end
     end
