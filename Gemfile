@@ -14,6 +14,12 @@ gem 'faraday'
 gem 'faraday_middleware'
 gem 'octokit'
 gem 'pmap'
+gem 'anima'
+
+group :development do
+  gem 'rspec'
+  gem 'approvals'
+end
 
 group :test do
   gem 'pry'
