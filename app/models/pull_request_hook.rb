@@ -1,5 +1,5 @@
 class PullRequestHook < Webhook
-  attr_accessor :data
+  attr_accessor :data, :comment
 
   def initialize(json)
     @data = Hashie::Mash.new(json)
