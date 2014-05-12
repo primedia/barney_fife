@@ -20,4 +20,10 @@ class PullRequestHook < Webhook
   def pr_number
     data.number.to_s
   end
+
+  def to_hash
+    [:repo_full, :owner, :repo, :pr_number].each_with_object({}) do |sym, obj|
+      obj[sym] = send(sym)
+    end
+  end
 end
