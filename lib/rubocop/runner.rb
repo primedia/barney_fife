@@ -49,6 +49,7 @@ module BarneyFife
     RUBOCOP_CMD = 'rubocop'
 
     def self.run(opts = {})
+
       # Usage: presenter = BarneyFife::Rubocop.run(issue_number: '820', owner: 'primedia', repo: 'ag')
       issue_number = opts.fetch(:issue_number) { '820' }
       owner = opts.fetch(:owner) { 'primedia' }
@@ -61,11 +62,14 @@ module BarneyFife
     end
 
     class RoundUp
+
       attr_accessor :pull_request_number, :response, :response_body, :api, :client, :owner, :repo
 
       SHA_REGEX = /[a-f0-9]{40,40}\//
 
       def self.call(pull_request_number, owner, repo, tmpdir)
+
+
         round = new(pull_request_number, owner, repo)
         round.gather_pull_request
         round.download_files(tmpdir)
