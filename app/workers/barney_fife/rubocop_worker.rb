@@ -29,8 +29,6 @@ module BarneyFife
                                     repo: pr.repo,
                                     content: '')
 
-      commits = BarneyFife::Rubocop::RoundUp.new(pr.pr_number, pr.owner, pr.repo).gather_commits
-      pr.sha = commits.last.sha
       collection = BarneyFife::Rubocop::OffenseCollection.new(json: presenter.json_output["files"])
       collection.files.each do |file|
         file.issues.each do |offense|
@@ -40,6 +38,10 @@ module BarneyFife
                                   body: offense.body)
         end
       end
+
+      status = BarneyFife::Rubocop::Status.new(pr.repo_full, pr.sha)
+
+      presenter.success? ? status.success : status.failure
 
       OpenStruct.new('success?' => true)
     end

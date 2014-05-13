@@ -143,6 +143,38 @@ module BarneyFife
 
     end
 
+    class Status
+      attr_reader :repo, :sha, :client
+
+      CONTEXT = 'code-quality/barney-fife'
+
+      def initialize(repo, sha, client = Octokit::Client.new(access_token: ENV['GITHUB_AUTH_TOKEN']))
+        @repo, @sha, @client = repo, sha, client
+      end
+
+      def pending
+        set_status('pending')
+      end
+
+      def success
+        set_status('success')
+      end
+
+      def failure
+        set_status('failure')
+      end
+
+      private
+
+      def set_status(state)
+        client.create_status(repo, sha, state, context: CONTEXT, accept: 'application/vnd.github.she-hulk-preview+json')
+      end
+      # instantly set to pending
+      # context 'code-quality/barney-fife', ref
+      # return 'failure' if there are any warnings, else success
+      #
+    end
+
     class RoundUp
       attr_accessor :pull_request_number, :response, :response_body, :api, :client, :owner, :repo
 
@@ -303,6 +335,10 @@ DOC
 
       def normalize_human_output
         @normalized_human_output = human_output.gsub("#{tmpdir}/", '')
+      end
+
+      def success?
+        summary.offense_count < 1
       end
 
     end
