@@ -14,6 +14,7 @@ gem 'anima'
 gem 'ops'
 gem 'environs'
 gem 'bunny'
+gem 'oj'
 
 group :production do
   gem 'sqlite3'

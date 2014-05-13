@@ -1,5 +1,5 @@
 namespace :worker do
   task rubocop: :environment do
-    RubocopWorker.run
+    BarneyFife::RubocopWorker.run
   end
 end

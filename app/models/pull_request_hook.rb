@@ -1,5 +1,5 @@
 class PullRequestHook < Webhook
-  attr_accessor :data, :comment
+  attr_accessor :data, :comment, :sha
 
   def initialize(json)
     @data = Hashie::Mash.new(json)
@@ -22,7 +22,7 @@ class PullRequestHook < Webhook
   end
 
   def to_hash
-    [:repo_full, :owner, :repo, :pr_number].each_with_object({}) do |sym, obj|
+    [:repo_full, :owner, :repo, :pr_number, :sha].each_with_object({}) do |sym, obj|
       obj[sym] = send(sym)
     end
   end

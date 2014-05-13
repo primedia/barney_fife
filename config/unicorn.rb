@@ -50,7 +50,7 @@ after_fork do |server, worker|
   $rabbitmq_channel = $rabbitmq_connection.create_channel.tap { |ch| ch.default_exchange; ch.prefetch(1) }
 
   Thread.new do
-    RubocopWorker.run
+    BarneyFife::RubocopWorker.run
   end
 
 end

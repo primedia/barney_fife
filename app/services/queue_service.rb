@@ -20,7 +20,7 @@ class QueueService
   def consume(block)
     queue.subscribe(ack: true, block: false) do |delivery_info, properties, body|
       tag = delivery_info.delivery_tag
-      result = block.call(Marshall.load(body))
+      result = block.call(Marshal.load(body))
       result.success? ? acknowledge_message(tag) : reject_message(tag)
     end
   end
