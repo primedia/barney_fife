@@ -1,14 +1,25 @@
 class RubocopController < ApplicationController
 
   def hook
-    pr = PullRequestHook.new(params)
-    # TODO: turn pr object into something that can to_hash & splat into place for later calls
-    status = BarneyFife::Rubocop::Status.new(pr.repo_full, pr.sha)
-    status.pending
-    QueueService.publish(pr.to_hash)
+    result = HandleWebhookResponse.perform(webhook_params)
 
-    ## status.success || status.failure
-    render json: pr.to_hash
-
+    head (result.success? ? :ok : :internal_server_error)
   end
+
+  private
+
+  def payload
+    Hashie::Mash.new(params)
+  end
+
+  def webhook_params
+    {
+      owner: payload.repository.owner.login,
+      repo: payload.repository.name,
+      pull_request_number: payload.number.to_s,
+      sha: payload.pull_request.head.sha,
+      repo_full_name: payload.repository.full_name
+    }
+  end
+
 end

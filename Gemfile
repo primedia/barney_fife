@@ -15,6 +15,7 @@ gem 'ops'
 gem 'environs'
 gem 'bunny'
 gem 'oj'
+gem 'interactor-rails'
 
 group :production do
   gem 'sqlite3'

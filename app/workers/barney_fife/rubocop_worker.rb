@@ -2,7 +2,7 @@ require 'ostruct'
 
 module BarneyFife
   class RubocopWorker
-    attr_reader :searcher, :queue_service
+    attr_reader :queue_service
 
     def self.run
       new.run
@@ -13,18 +13,17 @@ module BarneyFife
     end
 
     def run
-      queue_service.consume do |msg|
-        process(msg)
-      end
+      queue_service.consume { |msg| process(msg) }
     end
 
     private
 
     def process(msg)
-      pr = Hashie::Mash.new(msg)
-      presenter = BarneyFife::Rubocop.run(issue_number: pr.pr_number, owner: pr.owner, repo: pr.repo)
+      pr = PullRequestEvent.find_by_id(msg)
 
-      commenter = BarneyFife::Rubocop::Comment.new(issue_number: pr.pr_number,
+      presenter = BarneyFife::Rubocop.run(pull_request_number: pr.pull_request_number, owner: pr.owner, repo: pr.repo)
+
+      commenter = BarneyFife::Rubocop::Comment.new(issue_number: pr.pull_request_number,
                                     owner: pr.owner,
                                     repo: pr.repo,
                                     content: '')
@@ -39,9 +38,9 @@ module BarneyFife
         end
       end
 
-      status = BarneyFife::Rubocop::Status.new(pr.repo_full, pr.sha)
+      status = GitHub::Status.new(pr.repo_full_name, pr.sha)
 
-      presenter.success? ? status.success : status.failure
+      presenter.success? ? status.success! : status.failure!
 
       OpenStruct.new('success?' => true)
     end

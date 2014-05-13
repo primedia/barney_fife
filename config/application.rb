@@ -33,5 +33,6 @@ module BarneyFife
     end
 
     config.worker = Env.worker(allow_nil: true)
+    config.github_token = Env.github_auth_token
   end
 end

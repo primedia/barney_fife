@@ -84,6 +84,10 @@ GEM
     hirb (0.7.1)
     i18n (0.6.9)
     ice_nine (0.11.0)
+    interactor (2.1.0)
+    interactor-rails (1.0.1)
+      interactor (< 3)
+      rails (>= 3, < 5)
     jazz_hands (0.5.2)
       awesome_print (~> 1.2)
       coolline (>= 0.4.2)
@@ -230,6 +234,7 @@ DEPENDENCIES
   faraday
   faraday_middleware
   hashie
+  interactor-rails
   jazz_hands
   octokit
   oj
