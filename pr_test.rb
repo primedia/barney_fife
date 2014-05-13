@@ -5,5 +5,9 @@ module Pr
     def method_to_overwrite(  args )
       do_something_else_with("{ args }" )
     end
+    
+    def anotherBadMethod foo
+      foo.bar.baz
+    end
   end
 end
