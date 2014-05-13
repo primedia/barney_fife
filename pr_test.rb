@@ -1,13 +1,7 @@
 module Pr
-
   class Test
-
-    def method_to_overwrite(  args )
-      do_something_else_with("{ args }" )
-    end
-    
-    def anotherBadMethod foo
-      foo.bar
+    def should_pass
+      foo
     end
   end
 end
