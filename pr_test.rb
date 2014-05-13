@@ -7,7 +7,7 @@ module Pr
     end
     
     def anotherBadMethod foo
-      foo.bar.qux
+      foo.bar
     end
   end
 end
