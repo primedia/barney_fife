@@ -8,7 +8,7 @@ To setup:
 
 * Clone repo
 * Bundle install
-* `cp .env{.sample,}`
+* `cp .env{.sample,.development}` (or `env.test`)
 * Add Github Auth Token to `.env`
 * Run `rake secret >> .env`
 * Then edit `.env` to put secret token in correct spot.
