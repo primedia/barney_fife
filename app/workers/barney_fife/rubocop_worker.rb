@@ -19,30 +19,54 @@ module BarneyFife
     private
 
     def process(msg)
-      pr = PullRequestEvent.find_by_id(msg)
+      puts msg.inspect
+      begin
+        pr = PullRequestEvent.find_by_id(msg[:id])
 
-      presenter = BarneyFife::Rubocop.run(pull_request_number: pr.pull_request_number, owner: pr.owner, repo: pr.repo)
+        presenter = BarneyFife::Rubocop.run(pr)
+        commenter = GitHub::Commenter.new(pr)
 
-      commenter = BarneyFife::Rubocop::Comment.new(issue_number: pr.pull_request_number,
-                                    owner: pr.owner,
-                                    repo: pr.repo,
-                                    content: '')
-
-      collection = BarneyFife::Rubocop::OffenseCollection.new(json: presenter.json_output["files"])
-      collection.files.each do |file|
-        file.issues.each do |offense|
-          commenter.create_on_line(sha: pr.sha,
-                                  path: file.relative_path,
-                                  line_number: offense.location.line,
-                                  body: offense.body)
+        files = presenter.json_output["files"]
+        files.each do |file|
+          file.offenses.each do |offense|
+            create_comment(commenter, file, offense)
+          end
         end
+
+        status = GitHub::Status.new(pr.repo_full_name, pr.sha)
+
+        presenter.success? ? status.success! : status.failure!
+
+        OpenStruct.new('success?' => true)
+
+      rescue StandardError => e
+        Rails.logger.error e.message
+        Rails.logger.error e.backtrace.join("\n")
+
+        GitHub::Status.new(msg[:repo_full_name], msg[:sha]).error!
+
+        OpenStruct.new('success?' => false)
       end
+    end
 
-      status = GitHub::Status.new(pr.repo_full_name, pr.sha)
+    def create_comment(commenter, file, offense)
+      commenter.create_line_comment(comment(file, offense))
+    end
 
-      presenter.success? ? status.success! : status.failure!
+    def comment(file, offense)
+      GitHub::Comment.new(path: relative_path(file['path']),
+                          line_number: offense['location']['line'],
+                          body: formatted_message(offense)
+                         )
+    end
 
-      OpenStruct.new('success?' => true)
+    def relative_path(path)
+      split_on_temp_path_regex = %r(tmp/rubocop.+/)
+      path.split(split_on_temp_path_regex)[-1]
+    end
+
+    def formatted_message(offense)
+      "#{offense['location']['line']}:#{offense['location']['column']} - #{offense['cop_name']} - #{offense['message']}"
     end
   end
 end
