@@ -32,6 +32,7 @@ GEM
       ice_nine (~> 0.11.0)
       memoizable (~> 0.4.0)
     addressable (2.3.6)
+    amq-protocol (1.9.2)
     anima (0.2.0)
       abstract_type (~> 0.0.7)
       adamantium (~> 0.1)
@@ -41,15 +42,27 @@ GEM
       thor (~> 0.18)
     arel (5.0.1.20140414130214)
     ast (2.0.0)
+    awesome_print (1.2.0)
     better_errors (1.1.0)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
+    bunny (1.2.1)
+      amq-protocol (>= 1.9.2)
     coderay (1.1.0)
+    columnize (0.8.9)
+    coolline (0.4.3)
     debug_inspector (0.0.2)
+    debugger (1.6.6)
+      columnize (>= 0.3.1)
+      debugger-linecache (~> 1.2.0)
+      debugger-ruby_core_source (~> 1.3.2)
+    debugger-linecache (1.2.0)
+    debugger-ruby_core_source (1.3.4)
     diff-lcs (1.2.5)
+    diffy (3.0.4)
     dotenv (0.11.1)
       dotenv-deployment (~> 0.0.2)
     dotenv-deployment (0.0.2)
@@ -62,10 +75,27 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.9.1)
       faraday (>= 0.7.4, < 0.10)
+    grit (2.5.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
     hashie (2.1.1)
     hike (1.2.3)
+    hirb (0.7.1)
     i18n (0.6.9)
     ice_nine (0.11.0)
+    jazz_hands (0.5.2)
+      awesome_print (~> 1.2)
+      coolline (>= 0.4.2)
+      hirb (~> 0.7.1)
+      pry (~> 0.9.12)
+      pry-debugger (~> 0.2.2)
+      pry-doc (~> 0.4.6)
+      pry-git (~> 0.2.3)
+      pry-rails (~> 0.3.2)
+      pry-remote (>= 0.1.7)
+      pry-stack_explorer (~> 0.4.9)
+      railties (>= 3.0, < 5.0)
     json (1.8.1)
     mail (2.5.4)
       mime-types (~> 1.16)
@@ -82,6 +112,7 @@ GEM
       mini_portile (~> 0.5.0)
     octokit (3.1.0)
       sawyer (~> 0.5.3)
+    oj (2.9.0)
     ops (0.5.0)
       sinatra (>= 1.2.0)
       sinatra-respond_to (>= 0.7.0)
@@ -90,14 +121,30 @@ GEM
       slop (~> 3.4, >= 3.4.5)
     pmap (1.0.1)
     polyglot (0.3.4)
+    posix-spawn (0.3.8)
     powerpack (0.0.9)
     pry (0.9.12.6)
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
+    pry-debugger (0.2.2)
+      debugger (~> 1.3)
+      pry (~> 0.9.10)
+    pry-doc (0.4.6)
+      pry (>= 0.9)
+      yard (>= 0.8)
+    pry-git (0.2.3)
+      diffy
+      grit
+      pry (>= 0.9.8)
+    pry-rails (0.3.2)
+      pry (>= 0.9.10)
     pry-remote (0.1.8)
       pry (~> 0.9)
       slop (~> 3.0)
+    pry-stack_explorer (0.4.9.1)
+      binding_of_caller (>= 0.7)
+      pry (>= 0.9.11)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
@@ -167,6 +214,7 @@ GEM
       polyglot (>= 0.3.1)
     tzinfo (1.1.0)
       thread_safe (~> 0.1)
+    yard (0.8.7.4)
 
 PLATFORMS
   ruby
@@ -176,15 +224,17 @@ DEPENDENCIES
   approvals
   better_errors
   binding_of_caller
+  bunny
   dotenv-rails
   environs
   faraday
   faraday_middleware
   hashie
+  jazz_hands
   octokit
+  oj
   ops
   pmap
-  pry
   pry-remote
   rails (= 4.1.1)
   rspec-rails

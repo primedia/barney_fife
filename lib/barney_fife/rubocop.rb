@@ -28,7 +28,6 @@
 # Basic command
 # `rubocop --format progress --out rubocop.progress --format json --out rubocop.json`
 
-
 module BarneyFife
   module Rubocop
     RUBOCOP_CMD = 'rubocop'
@@ -46,17 +45,38 @@ module BarneyFife
     end
 
     class OffenseCollection
-      include Anima.new(:files)
+      attr_accessor :files, :json
+
+      def initialize(json: [])
+        @json = json
+        @files = parse
+      end
 
       def parse
-        Array(files).map do |f|
-          Offense.new(f)
+        Array(json).map do |f|
+          FileOffenses.new(f)
         end
+      end
+    end
 
+    class FileOffenses < Hashie::Mash
+      def relative_path
+        split_on_temp_path_regex = %r(tmp/rubocop.+/)
+        self.path.split(split_on_temp_path_regex)[-1]
+      end
+
+      def issues
+        @issues ||= self.offenses.map do |off|
+                        Offense.new(off)
+                      end
       end
     end
 
     class Offense < Hashie::Mash
+
+      def body
+        "#{self.location.line}:#{self.location.column} - #{self.cop_name} - #{self.message}"
+      end
     end
 
     class Comment
@@ -84,7 +104,7 @@ module BarneyFife
         end
       end
 
-      def create_on_line(sha: sha, path: path, line_number: line_number)
+      def create_on_line(sha: sha, path: path, line_number: line_number, body: body)
         # https://developer.github.com/v3/pulls/comments/#create-a-comment
         # Create a comment
         #
@@ -106,8 +126,9 @@ module BarneyFife
         # sha = "9caf57305a1c83a351aa7a2838b892a79b562b4b"
         # path = "pr_test.rb"
         # line_number = "3"
+        # SHA can come from json payload pull_request => head => sha
         payload = {
-                    body: content,
+                    body: body,
                     commit_id: sha,
                     path: path,
                     position: line_number,
@@ -148,12 +169,18 @@ module BarneyFife
         end
       end
 
-        #gather all files from github PR files modified/added list
-      def gather_pull_request
-        @response_body ||= request_pr_info
+      def gather_commits
+        # GET /repos/:owner/:repo/pulls/:number/commits
+        res = @api.get "/repos/#{owner}/#{repo}/pulls/#{pull_request_number}/commits"
+        res.body.map { |i| Hashie::Mash.new(i) }
       end
 
-      def request_pr_info
+        #gather all files from github PR files modified/added list
+      def gather_pull_request
+        @response_body ||= request_pr_files
+      end
+
+      def request_pr_files
         @response = @api.get "/repos/#{owner}/#{repo}/pulls/#{pull_request_number}/files"
         response.body.map { |item| Hashie::Mash.new(item) }
       end
@@ -239,7 +266,7 @@ module BarneyFife
       end
 
       def colorless_clang_cmd
-        '--require ./lib/rubocop/clang_colorless_style_formatter.rb --format Rubocop::Formatter::ClangColorlessStyleFormatter'
+        '--require ./lib/barney_fife/rubocop/clang_colorless_style_formatter.rb --format Rubocop::Formatter::ClangColorlessStyleFormatter'
       end
 
       def humanize_output(output)

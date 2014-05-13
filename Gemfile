@@ -13,6 +13,8 @@ gem 'pmap'
 gem 'anima'
 gem 'ops'
 gem 'environs'
+gem 'bunny'
+gem 'oj'
 
 group :production do
   gem 'sqlite3'
@@ -23,7 +25,7 @@ group :test, :development do
   gem 'dotenv-rails'
   gem 'rspec-rails'
   gem 'approvals'
-  gem 'pry'
+  gem 'jazz_hands'
   gem 'pry-remote'
   gem 'better_errors'
   gem 'binding_of_caller'
