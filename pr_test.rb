@@ -7,7 +7,7 @@ module Pr
     end
     
     def anotherBadMethod foo
-      foo.bar
+      foo.bar.foo
     end
   end
 end
