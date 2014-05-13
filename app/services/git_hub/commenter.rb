@@ -6,14 +6,14 @@ module GitHub
       @pull_request = pull_request
     end
 
-    def create_line_comment(comment)
+    def create_line_comment(path: path, line_number: line_number, body: body)
       GitHub::Client.create_pull_request_comment(
         pull_request.repo_full_name,
         pull_request.pull_request_number,
-        comment.body,
+        body,
         pull_request.sha,
-        comment.path,
-        comment.line_number
+        path,
+        line_number
       )
     end
 
