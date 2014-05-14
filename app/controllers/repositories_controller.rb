@@ -1,42 +1,36 @@
 class RepositoriesController < ApplicationController
-  before_action :set_repository, only: [:show, :edit, :update, :destroy]
 
-  # GET /repositories
   def index
     @repositories = Repository.all
   end
 
-  # GET /repositories/1
   def show
+    @repository = Repository.find(params[:id])
   end
 
-  # GET /repositories/new
   def new
     @repository = Repository.new
   end
 
-  # GET /repositories/1/edit
   def edit
+    @repository = Repository.find(params[:id])
   end
 
   # POST /repositories
   def create
-    @repository = Repository.new(repository_params)
+    organizer = SetupRepository.perform(repository_params)
 
-    if @repository.save
-      result = RegisterGitHubWebhook.perform(webhook_params(@repository)).success?
-      if result
-        redirect_to @repository, notice: 'Repository was successfully created.'
-      else
-        redirect_to @repository, notice: 'Webhook could not be created.'
-      end
+    if organizer.success?
+      redirect_to organizer.repository, notice: 'Repository was successfully created.'
     else
-      render :new
+      render :new, notice: 'Repository could not be created'
     end
   end
 
   # PATCH/PUT /repositories/1
   def update
+    @repository = Repository.find(params[:id])
+
     if @repository.update(repository_params)
       redirect_to @repository, notice: 'Repository was successfully updated.'
     else
@@ -46,22 +40,19 @@ class RepositoriesController < ApplicationController
 
   # DELETE /repositories/1
   def destroy
+    @repository = Repository.find(params[:id])
+
     @repository.destroy
     redirect_to repositories_url, notice: 'Repository was successfully destroyed.'
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_repository
-      @repository = Repository.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def repository_params
-      params.require(:repository).permit(:name, :organization)
-    end
-
-    def webhook_params(repository)
-      {repo_id: repository.id, url: "#{request.protocol}#{request.host_with_port}"}
-    end
+  def repository_params
+    {
+      name: params[:repository][:name],
+      organization: params[:repository][:organization],
+      url: "#{request.protocol}#{request.host_with_port}"
+    }
+  end
 end
