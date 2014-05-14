@@ -16,6 +16,11 @@ gem 'environs'
 gem 'bunny'
 gem 'oj'
 gem 'interactor-rails'
+gem 'slim-rails'
+gem 'twitter-bootswatch-rails'
+gem 'therubyracer'
+gem 'coffee-rails'
+gem 'jquery-rails'
 
 group :production do
   gem 'sqlite3'
