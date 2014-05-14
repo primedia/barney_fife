@@ -1,9 +1,13 @@
-class RubocopController < ApplicationController
+class WebhooksController < ApplicationController
 
-  def hook
-    result = HandleWebhookResponse.perform(webhook_params)
+  def create
+    if request.headers['X-GitHub-Event'] == 'pull_request'
+      result = HandlePullRequestWebhook.perform(webhook_params)
 
-    head (result.success? ? :ok : :internal_server_error)
+      head (result.success? ? :ok : :internal_server_error)
+    else
+      head :no_content
+    end
   end
 
   private
