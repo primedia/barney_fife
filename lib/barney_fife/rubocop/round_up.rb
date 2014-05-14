@@ -1,22 +1,23 @@
 module BarneyFife
   module Rubocop
     class RoundUp
-      attr_accessor :pull_request_number, :response, :response_body, :api, :client, :owner, :repo
+      attr_accessor :pull_request_number, :response, :response_body, :client, :owner, :repo, :repo_full_name
 
-      SHA_REGEX = /[a-f0-9]{40,40}\//
+      SHA_REGEX = %r{[a-f0-9]{40,40}/}
 
-      def self.call(pull_request_number, owner, repo, tmpdir)
-        round = new(pull_request_number, owner, repo)
+      def initialize(pr, client = GitHub::Client)
+        @pull_request_number, @owner, @repo, @client = pr.pull_request_number, pr.owner, pr.repo, client
+        @repo_full_name = pr.full_name
+      end
+
+      def self.call(pull_request, tmpdir)
+        round = new(pull_request)
         round.gather_pull_request
         round.download_files(tmpdir)
       end
 
-      def initialize(pull_request_number, owner, repo)
-        @pull_request_number = pull_request_number
-        @owner = owner
-        @repo = repo
-        @client = Octokit::Client.new access_token: ENV['GITHUB_AUTH_TOKEN']
-        @api = Faraday.new 'https://api.github.com' do |conn|
+      def api
+        @api ||= Faraday.new 'https://api.github.com' do |conn|
           conn.use Faraday::Request::BasicAuthentication, ENV['GITHUB_AUTH_TOKEN'], 'x-oauth-basic'
           conn.request :json
 
@@ -28,22 +29,11 @@ module BarneyFife
 
       def gather_commits
         # GET /repos/:owner/:repo/pulls/:number/commits
-        res = @api.get "/repos/#{owner}/#{repo}/pulls/#{pull_request_number}/commits"
-        res.body.map { |i| Hashie::Mash.new(i) }
-      end
-
-      #gather all files from github PR files modified/added list
-      def gather_pull_request
-        @response_body ||= request_pr_files
-      end
-
-      def request_pr_files
-        @response = @api.get "/repos/#{owner}/#{repo}/pulls/#{pull_request_number}/files"
-        response.body.map { |item| Hashie::Mash.new(item) }
+        @commits ||= client.pull_request_commits(repo_full_name, pull_request_number)
       end
 
       def files_modified
-        @files_modified ||= response_body
+        @files_modified ||= client.pull_request_files(repo_full_name, pull_request_number)
       end
 
       def split_on_sha(url)
@@ -68,12 +58,10 @@ module BarneyFife
 
       def download_files(tmp_rubodir, files = files_modified)
         files.peach do |file|
-          raw_url = file.raw_url
-          content_url = file.contents_url
-          file_shortname = split_on_sha(raw_url)
-          content_url = content_url.split('https://api.github.com')[1]
+          content_url = file.contents_url.split('https://api.github.com')[1]
+          file_shortname = split_on_sha(file.raw_url)
           necessary_dir = dirs_to_create(file_shortname)
-          filename = file_shortname.split(File::SEPARATOR)[-1]
+          filename = file_shortname.split(File::SEPARATOR).last
           file_dir = File.join(tmp_rubodir, necessary_dir)
 
           unless Dir.exists?(file_dir)
