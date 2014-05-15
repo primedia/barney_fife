@@ -1,3 +1,3 @@
-web: bundle exec rails server
-worker: env WORKER=true bundle exec rails server -p 3001 -P tmp/pids/worker.pid
+web: bundle exec puma
+worker: env WORKER=true bundle exec puma -p 3001
 # rabbitmq: rabbitmq-server

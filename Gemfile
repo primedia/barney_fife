@@ -27,6 +27,7 @@ group :production do
 end
 
 group :test, :development do
+  gem 'puma'
   gem 'sqlite3'
   gem 'dotenv-rails'
   gem 'rspec-rails'

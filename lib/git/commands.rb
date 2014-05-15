@@ -40,6 +40,10 @@ module Git
       cmd("git fetch")
     end
 
+    def checkout(ref)
+      cmd("git checkout #{ref}")
+    end
+
     def add(options = '--all')
       cmd("git add #{options}")
     end

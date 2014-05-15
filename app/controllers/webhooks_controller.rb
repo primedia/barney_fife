@@ -2,7 +2,7 @@ class WebhooksController < ApplicationController
 
   def create
     if request.headers['X-GitHub-Event'] == 'pull_request'
-      result = HandlePullRequestWebhook.perform(webhook_params)
+      result = ::HandleWebhookResponse.perform(webhook_params)
 
       head (result.success? ? :ok : :internal_server_error)
     else

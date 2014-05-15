@@ -2,7 +2,8 @@ class RunRubocop
   include Interactor
 
   def perform
-    presenter = BarneyFife::Rubocop.run(context[:pull_request])
+    fuzz = BarneyFife::Rubocop::Investigation.call(context[:pull_request])
+    presenter = BarneyFife::Rubocop::InvestigationPresenter.new(fuzz)
 
     context[:offenses] = Array(context[:offenses]) + presenter.offenses
     context[:no_errors] = true if presenter.success?
