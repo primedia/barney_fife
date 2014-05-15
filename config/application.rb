@@ -32,6 +32,7 @@ module BarneyFife
       config.environment = Rails.env
     end
 
+    config.repo_dir = "/tmp/rubocop/"
     config.worker = Env.worker(allow_nil: true)
     config.github_token = Env.github_auth_token
   end

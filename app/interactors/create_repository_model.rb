@@ -2,7 +2,8 @@ class CreateRepositoryModel
   include Interactor
 
   def perform
-    repo = Repository.new(context[:repository_params])
+    name, org = context.values_at(:name, :organization)
+    repo = Repository.new(name: name, organization: org)
     if repo.save
       context[:repository] = repo
     else

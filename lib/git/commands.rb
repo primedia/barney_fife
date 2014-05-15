@@ -2,14 +2,38 @@ require 'open3'
 
 module Git
   class Commands
-    include Anima.new(:repo_full_name)
+    include Anima.new(:name, :organization)
+
+    def ensure_base_dir
+      mkdir(storage_dir)
+    end
+
+    def is_repo?(path = repo_dir)
+      ensure_base_dir
+      return false unless Dir.exists?(path)
+      chdir(repo_dir) do
+        system("git rev-parse")
+      end
+    end
+
+    def clean_up
+      # prune and optimize
+      cmd("git gc")
+    end
 
     def clone
-      cmd("git clone #{github_url}")
+      mkdir(name)
+      cmd("git clone #{github_url} #{full_name}")
     end
 
     def pull
+      reset
       cmd("git pull")
+    end
+
+    def reset
+      cmd("git reset --hard && git clean -df")
+      clean_up
     end
 
     def fetch
@@ -25,7 +49,11 @@ module Git
     end
 
     def github_url
-      "git@github.com:#{repo_full_name}.git"
+      "git@github.com:#{full_name}.git"
+    end
+
+    def full_name
+      "#{organization}/#{name}"
     end
 
     def cmd(shell_command)
@@ -33,10 +61,22 @@ module Git
       [stdout.chomp, stderr.chomp, status]
     end
 
-    def tmp(dir='~/tmp', &block)
+    def mkdir(dir)
+      Dir.mkdir(dir) unless Dir.exists?(dir)
+    end
+
+    def chdir(dir = storage_dir, &block)
       Dir.chdir(File.expand_path(dir)) do
         yield
       end
+    end
+
+    def storage_dir
+      Rails.configuration.repo_dir
+    end
+
+    def repo_dir
+      File.join(storage_dir, full_name)
     end
 
     def tmp_dir(&block)

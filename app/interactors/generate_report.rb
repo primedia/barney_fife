@@ -1,5 +1,5 @@
 class GenerateReport
   include Interactor::Organizer
 
-  organize UpdateRepo, RunRubocop, AddOffensesCommentsToGitHub, UpdateGitHubCommitStatus
+  organize RunRubocop, AddOffensesCommentsToGitHub, UpdateGitHubCommitStatus
 end
