@@ -14,6 +14,12 @@ class AddOffensesCommentsToGitHub
   private
 
   def comment(offense)
-    @commenter.create_line_comment(path: offense.relative_path, line_number: offense.line_number, body: offense.formatted_message)
+    path_in_repo = path_relative_to_repo(offense.path)
+    @commenter.create_line_comment(path: path_in_repo, line_number: offense.line_number, body: offense.formatted_message)
+  end
+
+  def path_relative_to_repo(path)
+    full_name = @commenter.pull_request.repo_full_name
+    path.split(%r(#{Regexp.escape(full_name)}/)).last
   end
 end

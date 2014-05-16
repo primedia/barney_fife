@@ -26,7 +26,7 @@ DOC
       def offenses
         files.each_with_object([]) do |file, issues|
           file.offenses.each do |offense|
-            issues << ::Offense.new(path: file['path'], location: offense['location'], cop_name: offense['cop_name'], message: offense['message'])
+            issues << ::Rubocop::Offense.new(path: file['path'], location: offense['location'], cop_name: offense['cop_name'], message: offense['message'])
           end
         end
       end
