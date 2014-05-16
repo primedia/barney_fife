@@ -25,7 +25,7 @@ module BarneyFife
     config.rabbitmq_host = Env.datastores_rabbitmq_host
 
     # config.worker_queue = Env.worker_queue
-    config.worker_queue = 'dev.worker_queue'
+    config.worker_queue = 'barney_fife.dev.worker_queue'
 
     Ops.setup do |config|
       config.file_root = Rails.root
