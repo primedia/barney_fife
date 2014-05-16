@@ -2,14 +2,16 @@ class PrepareRepository
   include Interactor
 
   def perform
-    @name = context.fetch(:name) { context[:pull_request][:repo] }
-    @org = context.fetch(:organization){ context[:pull_request][:owner] }
+    @name = context[:name] || context[:pull_request][:repo]
+    @org = context[:organization] || context[:pull_request][:owner]
+    @ref = context[:ref] || context[:pull_request][:ref] || 'master'
     g = Git::Commands.new(name: @name, organization: @org)
 
     _,_,status = if g.is_repo?
                    g.chdir(full_path) do
-                     # TODO: git checkout correct branch
-                     g.checkout('pr_test')
+                     g.checkout_default_branch
+                     g.fetch_all
+                     g.checkout(@ref)
                      g.pull
                    end
                  else

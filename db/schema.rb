@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140514143956) do
+ActiveRecord::Schema.define(version: 20140516173031) do
 
   create_table "pull_request_events", force: true do |t|
     t.string   "owner"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20140514143956) do
     t.string   "pull_request_number"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "ref"
   end
 
   create_table "repositories", force: true do |t|

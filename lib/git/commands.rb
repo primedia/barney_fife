@@ -36,8 +36,21 @@ module Git
       clean_up
     end
 
-    def fetch
-      cmd("git fetch")
+    def fetch_all
+      fetch("--all")
+    end
+
+    def checkout_default_branch
+      checkout(default_branch)
+    end
+
+    def default_branch
+      @default_branch ||= GitHub::Client.repository(full_name).default_branch
+    end
+
+    def fetch(opt = '')
+      string = ["git fetch", opt].join(' ')
+      cmd(string)
     end
 
     def checkout(ref)
