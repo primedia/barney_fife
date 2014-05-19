@@ -1,28 +1,42 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.3'
-
-gem 'rails-api'
+gem 'rails', '4.1.1'
 
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
 gem 'rubocop'
 gem 'hashie'
-gem 'dotenv'
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'octokit'
 gem 'pmap'
+gem 'anima'
+gem 'ops'
+gem 'environs'
+gem 'bunny'
+gem 'oj'
+gem 'interactor-rails'
+gem 'slim-rails'
+gem 'twitter-bootswatch-rails'
+gem 'therubyracer'
+gem 'coffee-rails'
+gem 'jquery-rails'
 
-group :test do
-  gem 'pry'
+group :production do
+  gem 'sqlite3'
+end
+
+group :test, :development do
+  gem 'puma'
+  gem 'sqlite3'
+  gem 'dotenv-rails'
+  gem 'rspec-rails'
+  gem 'approvals'
+  gem 'jazz_hands'
   gem 'pry-remote'
   gem 'better_errors'
   gem 'binding_of_caller'
 end
-
-
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

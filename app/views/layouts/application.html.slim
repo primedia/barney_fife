@@ -1,0 +1,18 @@
+doctype 5
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= content_for?(:title) ? yield(:title) : "barney_fife"
+
+    = csrf_meta_tags
+
+    = stylesheet_link_tag "simplex", media: "all"
+    = yield(:page_stylesheet) if content_for?(:page_stylesheet)
+
+    = javascript_include_tag "simplex"
+    = yield(:page_javascript) if content_for?(:page_javascript)
+
+  body
+    = yield

@@ -1,0 +1,13 @@
+= form_for @repository, :html => { :class => 'form-horizontal' } do |f|
+  .control-group
+    = f.label :name, :class => 'control-label'
+    .controls
+      = f.text_field :name, :class => 'text_field'
+  .control-group
+    = f.label :organization, :class => 'control-label'
+    .controls
+      = f.text_field :organization, :class => 'text_field'
+  .form-actions
+    = f.submit nil, :class => 'btn btn-primary'
+    | &#xA0;
+    = link_to t('.cancel', :default => t("helpers.links.cancel")), repositories_path, :class => 'btn'

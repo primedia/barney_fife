@@ -12,6 +12,8 @@ module BarneyFife
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    config.autoload_paths += ["#{Rails.root}/lib"]
+
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # config.time_zone = 'Central Time (US & Canada)'
@@ -19,5 +21,19 @@ module BarneyFife
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    config.rabbitmq_host = Env.datastores_rabbitmq_host
+
+    # config.worker_queue = Env.worker_queue
+    config.worker_queue = 'barney_fife.dev.worker_queue'
+
+    Ops.setup do |config|
+      config.file_root = Rails.root
+      config.environment = Rails.env
+    end
+
+    config.repo_dir = "/tmp/rubocop/"
+    config.worker = Env.worker(allow_nil: true)
+    config.github_token = Env.github_auth_token
   end
 end
