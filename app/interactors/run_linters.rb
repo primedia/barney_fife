@@ -1,5 +1,5 @@
 class RunLinters
   include Interactor::Organizer
 
-  organize RunRubocop
+  organize RunRubocop, RunCoffeelint
 end
