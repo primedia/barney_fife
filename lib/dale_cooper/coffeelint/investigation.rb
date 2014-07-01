@@ -22,6 +22,7 @@ module DaleCooper
 
       def files_modified
         @files_modified ||= client.pull_request_files(repo_full_name, pull_request_number)
+                                  .select { |i| i.filename =~ /.*\.coffee$/ }
                                   .map { |i| File.join(repo_dir, i.filename) }
       end
 
@@ -34,10 +35,9 @@ module DaleCooper
             Open3.capture2("#{final_cmd}")
           end
         end
-        @human_output = humanize_output(output)
 
-        puts "****************#{@human_output}"
-        @json_output = hashify(read_json(file.path))
+        @human_output = humanize_output(output)
+        @json_output  = hashify(read_json(file.path))
       ensure
         file.close
         file.unlink
@@ -56,10 +56,33 @@ module DaleCooper
       end
 
       def hashify(json)
-        Hashie::Mash.new(json)
+        Hashie::Mash.new(format(json))
+      end
+
+      def files
+
       end
 
       def summary
         @summary ||= json_output.summary
       end
+
+      # Test this spike
+      def format(output)
+        output = {
+          "summary" => {},
+          "files" => output.keys.map do |file|
+            {
+              "path" => "#{file}",
+              "offenses" => output[file]
+            }
+          end
+        }
+
+        output["summary"]["offence_count"] = output['files'].size
+        output["summary"]["inspected_file_count"] = output['files'].reduce(0){|num, file| file['offenses'].size + num }
+        output
+      end
     end
+  end
+end

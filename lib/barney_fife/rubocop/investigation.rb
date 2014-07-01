@@ -22,6 +22,7 @@ module BarneyFife
 
       def files_modified
         @files_modified ||= client.pull_request_files(repo_full_name, pull_request_number)
+                                  .select { |i| i.filename =~ /.*\.rb$/ }
                                   .map { |i| File.join(repo_dir, i.filename) }
       end
 

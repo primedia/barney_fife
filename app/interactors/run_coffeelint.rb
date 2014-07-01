@@ -6,7 +6,7 @@ class RunCoffeelint
     presenter = DaleCooper::Coffeelint::InvestigationPresenter.new(fuzz)
 
     context[:offenses] = Array(context[:offenses]) + presenter.offenses
-    context[:no_errors] = true if presenter.success?
+    context[:no_errors] = context[:no_errors] && presenter.success?
   end
 
 end

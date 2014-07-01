@@ -3,9 +3,8 @@ module DaleCooper
     COFFEELINT_CMD = "coffeelint"
 
     def self.run(pull_request)
-      fuzz = Investigation.call(pull_request)
-      InvestigationPresenter.new(fuzz)
+      fuzz = DaleCooper::Coffeelint::Investigation.call(pull_request)
+      DaleCooper::Coffeelint::InvestigationPresenter.new(fuzz)
     end
   end
 end
-
