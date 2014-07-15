@@ -51,6 +51,7 @@ after_fork do |server, worker|
 
   Thread.new do
     BarneyFife::RubocopWorker.run
+    DaleCooper::CoffeelintWorker.run
   end
 
 end

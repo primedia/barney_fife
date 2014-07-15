@@ -11,5 +11,5 @@ To setup:
 * `cp .env{.sample,.development}` (or `env.test`)
 * Add Github Auth Token to `.env`
 * Run `rake secret >> .env`
-* Then edit `.env` to put secret token in correct spot.
+* Then edit `.env` to put secret token in correct spot. (explain what "correct spot" means)
 

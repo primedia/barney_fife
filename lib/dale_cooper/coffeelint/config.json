@@ -1,0 +1,7 @@
+{
+  "no_empty_param_list": "warn",
+  "no_interpolation_in_single_quotes": "warn",
+  "no_stand_alone_at": "warn",
+  "non_empty_constructor_needs_parens": "warn",
+  "space_operators": "warn"
+}

@@ -3,7 +3,7 @@ class GenerateReport
 
   organize [
             PrepareRepository,
-            RunRubocop,
+            RunLinters,
             AddOffensesCommentsToGitHub,
             UpdateGitHubCommitStatus
            ]

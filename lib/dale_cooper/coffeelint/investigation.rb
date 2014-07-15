@@ -1,5 +1,5 @@
-module BarneyFife
-  module Rubocop
+module DaleCooper
+  module Coffeelint
     class Investigation
       attr_accessor :files, :tmpdir, :human_output, :json_output,\
                     :pull_request_number, :response, :response_body,\
@@ -7,7 +7,7 @@ module BarneyFife
 
       def self.call(pull_request)
         investigation = new(pull_request)
-        investigation.gather_rubocop_inspection
+        investigation.gather_coffeelint_inspection
         investigation
       end
 
@@ -22,35 +22,29 @@ module BarneyFife
 
       def files_modified
         @files_modified ||= client.pull_request_files(repo_full_name, pull_request_number)
-                                  .select { |i| i.filename =~ /.*\.rb$/ }
+                                  .select { |i| i.filename =~ /.*\.coffee$/ }
                                   .map { |i| File.join(repo_dir, i.filename) }
       end
 
-      def gather_rubocop_inspection(file_list = files_modified)
-        file = Tempfile.new('rubocop_json')
-        final_cmd = [RUBOCOP_CMD, colorless_clang_cmd, json_cmd(file.path), file_list.join(' ')].join(' ')
+      def gather_coffeelint_inspection(file_list = files_modified)
+        file = Tempfile.new('coffeelint_json')
+        final_cmd = [COFFEELINT_CMD, file_list.join(' '), json_cmd(file.path)].join(' ')
         warn final_cmd
         output, status = Bundler.with_clean_env do
           Dir.chdir(repo_dir) do
             Open3.capture2("#{final_cmd}")
           end
         end
-        @human_output = humanize_output(output)
 
-        puts "****************#{@human_output}"
-        @json_output = hashify(read_json(file.path))
+        @human_output = humanize_output(output)
+        @json_output  = hashify(read_json(file.path))
       ensure
         file.close
         file.unlink
       end
 
       def json_cmd(path)
-        "--format json --out #{path}"
-      end
-
-      def colorless_clang_cmd
-        formatter_path = File.expand_path("lib/barney_fife/rubocop/clang_colorless_style_formatter.rb")
-        "--require #{formatter_path} --format Rubocop::Formatter::ClangColorlessStyleFormatter"
+        "--reporter raw > #{path}"
       end
 
       def humanize_output(output)
@@ -62,11 +56,28 @@ module BarneyFife
       end
 
       def hashify(json)
-        Hashie::Mash.new(json)
+        Hashie::Mash.new(format(json))
       end
 
       def summary
         @summary ||= json_output.summary
+      end
+
+      # Test this spike
+      def format(output)
+        output = {
+          "summary" => {},
+          "files" => output.keys.map do |file|
+            {
+              "path" => "#{file}",
+              "offenses" => output[file]
+            }
+          end
+        }
+
+        output["summary"]["offence_count"] = output['files'].reduce(0){|num, file| file['offenses'].size + num }
+        output["summary"]["inspected_file_count"] = output['files'].size
+        output
       end
     end
   end
