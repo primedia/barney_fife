@@ -59,10 +59,6 @@ module DaleCooper
         Hashie::Mash.new(format(json))
       end
 
-      def files
-
-      end
-
       def summary
         @summary ||= json_output.summary
       end
@@ -79,8 +75,8 @@ module DaleCooper
           end
         }
 
-        output["summary"]["offence_count"] = output['files'].size
-        output["summary"]["inspected_file_count"] = output['files'].reduce(0){|num, file| file['offenses'].size + num }
+        output["summary"]["offence_count"] = output['files'].reduce(0){|num, file| file['offenses'].size + num }
+        output["summary"]["inspected_file_count"] = output['files'].size
         output
       end
     end
