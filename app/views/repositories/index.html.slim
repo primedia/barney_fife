@@ -15,7 +15,7 @@ table.table.table-striped
           td= link_to repository.id, repository_path(repository)
           td= repository.name
           td= repository.organization
-          td=l repository.created_at
+          td= repository.created_at
           td
             = link_to t('.edit', :default => t("helpers.links.edit")), edit_repository_path(repository), :class => 'btn btn-mini'
             | &#xA0;

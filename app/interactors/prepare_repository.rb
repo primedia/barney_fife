@@ -4,7 +4,7 @@ class PrepareRepository
   def perform
     @name = context[:name] || context[:pull_request][:repo]
     @org = context[:organization] || context[:pull_request][:owner]
-    @ref = context[:ref] || context[:pull_request][:ref] || 'master'
+    @ref = context[:ref] || context.fetch(:pull_request, {})[:ref] || 'master'
     g = Git::Commands.new(name: @name, organization: @org)
 
     _,_,status = if g.is_repo?

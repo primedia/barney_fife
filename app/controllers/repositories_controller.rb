@@ -25,13 +25,17 @@ class RepositoriesController < ApplicationController
     else
       render :new, notice: 'Repository could not be created'
     end
+
   end
 
   # PATCH/PUT /repositories/1
   def update
     @repository = Repository.find(params[:id])
 
-    if @repository.update(repository_params)
+    # model does not have the :url attribute
+    expected_params = repository_params.keep_if {|key, _| key != :url}
+
+    if @repository.update(expected_params)
       redirect_to @repository, notice: 'Repository was successfully updated.'
     else
       render :edit
